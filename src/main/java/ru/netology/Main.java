@@ -12,9 +12,8 @@ public class Main {
 
     public static void main(String[] args) {
         Server server = new Server();
-
-            server.addHandler("GET", "/index.html", (request, responseStream) -> {
-
+        for (String validPath : validPaths) {
+            server.addHandler("GET", validPath, (request, responseStream) -> {
                 try {
                     final Path filePath = Path.of(".", "public", request.getPath());
                     final String mimeType;
@@ -33,9 +32,9 @@ public class Main {
                     e.printStackTrace();
                 }
             });
-
-
-            server.addHandler("POST", "/index.html", (request, responseStream) -> {
+        }
+        for (String validPath : validPaths) {
+            server.addHandler("POST", validPath, (request, responseStream) -> {
                 final Path filePath = Path.of(".", "public", request.getPath());
                 final String mimeType;
                 try {
@@ -54,7 +53,7 @@ public class Main {
                     e.printStackTrace();
                 }
             });
-
+        }
         server.listen(9999);
     }
 }
