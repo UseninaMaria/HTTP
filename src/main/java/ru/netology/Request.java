@@ -19,6 +19,13 @@ public class Request {
         this.body = body;
     }
 
+    public Request(String method, String path, String protocol, Map<String, String> headers) {
+        this.method = method;
+        this.path = path;
+        this.protocol = protocol;
+        this.headers = headers;
+    }
+
     public String getMethod() {
         return method;
     }
