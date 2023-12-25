@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 public class Main {
     private static final List<String> validPaths = List.of("/index.html", "/spring.svg",

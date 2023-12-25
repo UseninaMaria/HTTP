@@ -1,6 +1,15 @@
 package ru.netology;
 
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.net.URLEncodedUtils;
+
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Request {
@@ -45,4 +54,44 @@ public class Request {
     public String getProtocol() {
         return protocol;
     }
+
+    public String getQueryParam(String name) {
+        String query = getPath();
+        List<NameValuePair> params = null;
+        try {
+            params = URLEncodedUtils.parse(new URI("?" + query), StandardCharsets.UTF_8);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        if (params != null) {
+            for (NameValuePair param : params) {
+                if (param.getName().equals(name)) {
+                    return param.getValue();
+                }
+            }
+        }
+        return null;
+    }
+
+    public Map<String, List<String>> getQueryParams() {
+        String query = getPath();
+        List<NameValuePair> params = null;
+        try {
+            params = URLEncodedUtils.parse(new URI(query), StandardCharsets.UTF_8);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        Map<String, List<String>> queryParams = new HashMap<>();
+        if (params != null) {
+            for (NameValuePair param : params) {
+                if (!queryParams.containsKey(param.getName())) {
+                    queryParams.put(param.getName(), new ArrayList<>());
+                }
+                queryParams.get(param.getName()).add(param.getValue());
+            }
+        }
+        return queryParams;
+    }
 }
+
