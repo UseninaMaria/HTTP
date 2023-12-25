@@ -19,6 +19,7 @@ public class Request {
     private InputStream body;
 
     private String protocol;
+    private Map<String, List<String>> queryParams;
 
     public Request(String method, String path, String protocol, Map<String, String> headers, InputStream body) {
         this.method = method;
@@ -74,21 +75,23 @@ public class Request {
     }
 
     public Map<String, List<String>> getQueryParams() {
-        String query = getPath();
-        List<NameValuePair> params = null;
-        try {
-            params = URLEncodedUtils.parse(new URI(query), StandardCharsets.UTF_8);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+        if (queryParams == null) {
+            queryParams = new HashMap<>();
+            String query = getPath();
+            List<NameValuePair> params = null;
+            try {
+                params = URLEncodedUtils.parse(new URI(query), StandardCharsets.UTF_8);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
 
-        Map<String, List<String>> queryParams = new HashMap<>();
-        if (params != null) {
-            for (NameValuePair param : params) {
-                if (!queryParams.containsKey(param.getName())) {
-                    queryParams.put(param.getName(), new ArrayList<>());
+            if (params != null) {
+                for (NameValuePair param : params) {
+                    if (!queryParams.containsKey(param.getName())) {
+                        queryParams.put(param.getName(), new ArrayList<>());
+                    }
+                    queryParams.get(param.getName()).add(param.getValue());
                 }
-                queryParams.get(param.getName()).add(param.getValue());
             }
         }
         return queryParams;
