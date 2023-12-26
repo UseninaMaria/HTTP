@@ -56,45 +56,18 @@ public class Request {
         return protocol;
     }
 
+    public void setQueryParams(Map<String, List<String>> parsedParams) {
+        this.queryParams = parsedParams;
+    }
+
     public String getQueryParam(String name) {
-        String query = getPath();
-        List<NameValuePair> params = null;
-        try {
-            params = URLEncodedUtils.parse(new URI("?" + query), StandardCharsets.UTF_8);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        if (params != null) {
-            for (NameValuePair param : params) {
-                if (param.getName().equals(name)) {
-                    return param.getValue();
-                }
+        if (queryParams != null) {
+            List<String> values = queryParams.get(name);
+            if (values != null && !values.isEmpty()) {
+                return values.get(0);
             }
         }
         return null;
-    }
-
-    public Map<String, List<String>> getQueryParams() {
-        if (queryParams == null) {
-            queryParams = new HashMap<>();
-            String query = getPath();
-            List<NameValuePair> params = null;
-            try {
-                params = URLEncodedUtils.parse(new URI(query), StandardCharsets.UTF_8);
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-
-            if (params != null) {
-                for (NameValuePair param : params) {
-                    if (!queryParams.containsKey(param.getName())) {
-                        queryParams.put(param.getName(), new ArrayList<>());
-                    }
-                    queryParams.get(param.getName()).add(param.getValue());
-                }
-            }
-        }
-        return queryParams;
     }
 }
 
